@@ -1,0 +1,257 @@
+:root {
+  color-scheme: light;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  background: #d9efd2;
+  color: #22301d;
+  --panel: #fffdf4;
+  --panel-border: #b9d3ad;
+  --accent: #3f7d3a;
+  --accent-dark: #2c5a29;
+  --gold: #d99b1c;
+  --danger: #a33a2c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 0%, #f6f7c8 0, transparent 35%),
+    linear-gradient(#d9efd2, #b7dcb0);
+}
+
+button {
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  border: 2px solid var(--accent-dark);
+  border-radius: 0.7rem;
+  background: #eef7e6;
+  color: var(--accent-dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #dcf0ce;
+}
+
+button:focus-visible {
+  outline: 3px solid #1c4b1a;
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button.selected,
+button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent-dark);
+  color: #fff;
+}
+
+progress {
+  width: 100%;
+  height: 0.8rem;
+  accent-color: var(--accent);
+}
+
+.game-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--panel-border);
+  border-radius: 1rem;
+  background: var(--panel);
+  box-shadow: 0 0.35rem 0.9rem rgb(34 48 29 / 12%);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+}
+
+h2 {
+  font-size: 1.15rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+.tagline,
+.panel-help,
+.shop-meta,
+.animal-status {
+  color: #55654e;
+}
+
+.wallet {
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: #fff3cf;
+  border: 2px solid #e6c46a;
+  font-size: 1.05rem;
+}
+
+.wallet-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.message-banner {
+  margin: 0.9rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 6px solid var(--gold);
+  border-radius: 0.5rem;
+  background: #fff8e3;
+}
+
+.live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.panel {
+  padding: 1rem;
+  border: 2px solid var(--panel-border);
+  border-radius: 1rem;
+  background: var(--panel);
+  box-shadow: 0 0.35rem 0.9rem rgb(34 48 29 / 10%);
+}
+
+.sidebar {
+  display: grid;
+  gap: 1rem;
+}
+
+.farm-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border: 2px solid #6b8f5c;
+  border-radius: 0.9rem;
+  touch-action: manipulation;
+}
+
+.shop-row,
+.inventory-list li,
+.plot-controls li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed #cfdcc4;
+}
+
+.shop-info {
+  display: grid;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.buy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.inventory-list,
+.plot-controls,
+.animal-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plot-controls-host {
+  margin-top: 0.75rem;
+}
+
+.animal-card {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  margin-bottom: 0.6rem;
+  border: 2px solid #d6e2cb;
+  border-radius: 0.75rem;
+  background: #fbfff7;
+}
+
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+}
+
+.help-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.help-list li {
+  margin-bottom: 0.35rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .game-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-canvas {
+    aspect-ratio: 1 / 1;
+  }
+
+  .buy-grid {
+    grid-template-columns: 1fr;
+  }
+}
