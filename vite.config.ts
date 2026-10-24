@@ -10,6 +10,9 @@ export default defineConfig({
     port: 4173,
     strictPort: true
   },
+  build: {
+    chunkSizeWarningLimit: 700
+  },
   test: {
     environment: "node",
     include: ["tests/unit/**/*.test.ts"]

@@ -161,12 +161,26 @@ h3 {
 }
 
 .farm-canvas {
-  display: block;
+  position: relative;
   width: 100%;
   aspect-ratio: 3 / 2;
+  overflow: hidden;
   border: 2px solid #6b8f5c;
   border-radius: 0.9rem;
-  touch-action: manipulation;
+  background: linear-gradient(#9fd7f5, #d8f0c9);
+  touch-action: none;
+}
+
+.farm-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.scene-hint {
+  margin: 0.5rem 0 0;
+  color: #55654e;
+  font-size: 0.9rem;
 }
 
 .shop-row,

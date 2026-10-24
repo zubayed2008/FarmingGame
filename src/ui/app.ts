@@ -16,7 +16,6 @@ import {
   ITEMS,
   LIVESTOCK_SPECIES_LIST,
   PET_SPECIES_LIST,
-  PLOT_COUNT,
   getAnimalCost,
   getAnimalEmoji,
   getAnimalFeedCost,
@@ -34,8 +33,7 @@ import { advanceTime } from "../game/simulation";
 import { createNewGame } from "../game/state";
 import type { ActionResult, AnimalSpecies, CropSpecies, GameState, ItemId } from "../game/types";
 import { loadGame, resetGame, saveGame } from "../persistence/storage";
-import { createFarmRenderer } from "../render/canvas";
-import { attachPlotPointer } from "../render/input";
+import { createFarmScene } from "../render/scene3d";
 import { createLiveRegion, createPlotControls } from "./accessibility";
 import { element, makeButton, makeProgress } from "./panels";
 
@@ -83,15 +81,15 @@ export function startApp(root: HTMLElement): void {
 
   const main = element("main", "game-grid");
   const farmCard = element("section", "panel farm-card");
-  const canvas = element("canvas", "farm-canvas");
-  canvas.setAttribute("role", "img");
-  canvas.setAttribute(
+  const sceneHost = element("div", "farm-canvas");
+  sceneHost.setAttribute("role", "img");
+  sceneHost.setAttribute(
     "aria-label",
-    "Farm plot board. Use the plot controls below to plant, water, and harvest with a keyboard."
+    "3D farm view. Drag to rotate and scroll to zoom. Use the plot controls below to plant, water, and harvest with a keyboard."
   );
-  canvas.textContent = "Your farm plot board.";
+  const sceneHint = element("p", "scene-hint", "Drag to rotate · scroll to zoom · click a plot");
   const plotControlsHost = element("div", "plot-controls-host");
-  farmCard.append(element("h2", undefined, "Farm plots"), canvas, plotControlsHost);
+  farmCard.append(element("h2", undefined, "Farm plots"), sceneHost, sceneHint, plotControlsHost);
 
   const sidebar = element("div", "sidebar");
   const helpPanel = element("section", "panel");
@@ -120,8 +118,7 @@ export function startApp(root: HTMLElement): void {
   shell.append(header, messageBanner, main, liveRegion);
   root.append(shell);
 
-  const renderer = createFarmRenderer(canvas);
-  const detachPointer = attachPlotPointer(canvas, PLOT_COUNT, (plotId) => handlePlot(plotId));
+  const scene = createFarmScene(sceneHost, (plotId) => handlePlot(plotId));
 
   function saveNow(): void {
     const result = saveGame(storage, state, Date.now());
@@ -369,6 +366,7 @@ export function startApp(root: HTMLElement): void {
     renderAnimals();
     renderPlots();
     renderMessage();
+    scene.setGameState(state);
     milestone = computeMilestone();
   }
 
@@ -382,17 +380,10 @@ export function startApp(root: HTMLElement): void {
     } else {
       renderStatus();
       updateLiveValues();
+      scene.setGameState(state);
     }
   }
 
-  function frame(): void {
-    renderer.draw(state, selectedSpecies);
-    window.requestAnimationFrame(frame);
-  }
-
-  const resizeObserver = new ResizeObserver(() => renderer.resize());
-  resizeObserver.observe(canvas);
-  window.addEventListener("resize", renderer.resize);
   const simulationTimer = window.setInterval(tick, SIMULATION_INTERVAL_MS);
 
   window.__SUNNY_ACRES__ = {
@@ -422,14 +413,12 @@ export function startApp(root: HTMLElement): void {
   document.addEventListener("visibilitychange", handleVisibilityChange);
 
   renderAll();
-  renderer.resize();
-  frame();
+  scene.resize();
 
   window.addEventListener("beforeunload", () => {
     saveNow();
     window.clearInterval(simulationTimer);
-    resizeObserver.disconnect();
-    detachPointer();
+    scene.dispose();
     document.removeEventListener("visibilitychange", handleVisibilityChange);
   });
 }

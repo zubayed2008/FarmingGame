@@ -2,14 +2,14 @@
 
 ## 1. Technical direction
 
-Sunny Acres is a static, local-first browser game. Use **TypeScript + Vite + HTML Canvas + semantic DOM controls**. Canvas draws the farm; DOM provides shop, inventory, status, and accessible alternatives to board interactions.
+Sunny Acres is a static, local-first 3D browser game. Use **TypeScript + Vite + Three.js (WebGL) + semantic DOM controls**. Three.js renders the farm; DOM provides shop, inventory, status, and accessible alternatives to 3D interactions.
 
 No backend is required for the MVP. Saves live in `localStorage`. Do not add a game engine, state-management library, UI framework, database, or asset pipeline without a later requirement.
 
 ### Dependencies
 
-- Runtime: no production npm dependencies.
-- Development: `vite`, `typescript`, `vitest`, `@playwright/test`, and `jsdom` only if DOM tests need it.
+- Runtime: `three`.
+- Development: `vite`, `typescript`, `vitest`, `@playwright/test`, `@types/three`, and `jsdom` only if DOM tests need it.
 - Package manager: npm; commit `package-lock.json`.
 - Target: current evergreen desktop and mobile browsers.
 
@@ -39,9 +39,7 @@ BrowserGame/
 │   │   ├── simulation.ts       # Elapsed-time/offline progression
 │   │   └── selectors.ts        # Derived UI values; no mutation
 │   ├── render/
-│   │   ├── canvas.ts           # DPR sizing and farm drawing
-│   │   ├── input.ts            # Pointer-to-plot mapping
-│   │   └── layout.ts           # Shared grid geometry
+│   │   └── scene3d.ts          # Three.js world, models, raycasting, animation
 │   ├── ui/
 │   │   ├── app.ts              # Screen orchestration
 │   │   ├── panels.ts           # Shop/inventory/animal controls
@@ -187,8 +185,10 @@ This storage is convenience, not security. Players can edit local saves; do not 
 
 - Keep a single state owner in `ui/app.ts`. Dispatch an action, replace state on success, persist, render, and show its message.
 - Use event delegation and cleanup listeners when replacing UI. Never inject save-derived strings with `innerHTML`; use `textContent`.
-- Share grid geometry between rendering and pointer input. Account for `getBoundingClientRect()` scaling and device pixel ratio.
-- Use actual `<button>`, `<progress>`, headings, and lists in DOM panels. Every Canvas plot/animal action needs an equivalent DOM control.
+- Own the Three.js renderer, scene, camera, controls, and animation loop inside `render/scene3d.ts`. Dispose geometries, materials, the timer, and the renderer when the scene is torn down.
+- Size the WebGL canvas from its container, cap `devicePixelRatio` at 2, and update the camera aspect on resize.
+- Pick plots with a `Raycaster` against invisible hit meshes, and ignore drag gestures by comparing pointer-down and pointer-up distance.
+- Use actual `<button>`, `<progress>`, headings, and lists in DOM panels. Every 3D plot/animal action needs an equivalent DOM control.
 - Give icon-only buttons accessible names. Use a polite live region for completed actions, not continuous timer updates.
 - Provide visible focus, 44px touch targets, contrast, reduced-motion support, and labels beyond color.
 - Start with drawn shapes/emoji only if platform-independent presentation is not required. Prefer simple original SVG/PNG sprites stored under `public/assets/`; include license/source notes for third-party assets.

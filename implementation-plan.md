@@ -30,8 +30,7 @@ Pets do not produce goods. Do not add breeding, combat, crop bonuses, quests, or
 
 ### Included
 
-- One fixed farm screen, responsive on desktop and mobile.
-- Click/tap controls; no character movement or pathfinding.
+- One fixed farm screen with a rotatable, zoomable 3D camera; no character movement or pathfinding.
 - Six crop plots and four animal spaces, shared by livestock and pets.
 - Coins, inventory, shop, growth, production, and pet happiness.
 - Clear selected-tool and disabled-action feedback.
@@ -101,13 +100,13 @@ Complete phases in order. Keep each Cline task to one phase or numbered task.
 ### Phase 2 — Playable farming loop
 
 1. Build semantic DOM panels for coins, shop, inventory, selected tool, and messages.
-2. Render six plots on Canvas using a device-pixel-ratio-aware coordinate transform.
-3. Convert pointer coordinates to grid cells with Pointer Events for mouse/touch.
+2. Render a Three.js farm scene: lit grass field, six raised soil plots, barn, fence, paddock, trees, pond, and path.
+3. Pick plots with a Raycaster and distinguish clicks from camera drags.
 4. Add seed selection and plot actions: empty plots plant; dry crops water; ripe crops harvest.
-5. Provide an accessible DOM button/list alternative for every Canvas plot action.
-6. Show growth stage and remaining time; do not rely on color alone.
+5. Provide an accessible DOM button/list alternative for every 3D plot action.
+6. Show crop growth with 3D models plus ripe/water badges; do not rely on color alone.
 7. Add shop and inventory selling; disable unaffordable purchases.
-8. Update display with `requestAnimationFrame`, while simulation uses elapsed timestamps.
+8. Drive 3D animation with `requestAnimationFrame`, while simulation uses elapsed timestamps.
 
 **Done when:** a player can buy wheat, plant, water, wait, harvest, and sell without reloading.
 
